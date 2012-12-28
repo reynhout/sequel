@@ -779,7 +779,13 @@ module Sequel
       virtual_row_columns(columns, block)
       m = []
       columns.each do |i|
-        i.is_a?(Hash) ? m.concat(i.map{|k, v| SQL::AliasedExpression.new(k,v)}) : m << i
+        if i.is_a?(Hash)
+          m.concat(i.map{|k, v| SQL::AliasedExpression.new(k,v)})
+        elsif i.is_a?(Array)
+          m.concat(i)
+        else
+          m << i
+        end
       end
       clone(:select => m)
     end
